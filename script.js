@@ -1,7 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const emojiList = ["😀", "😂", "😍", "🤖", "👻", "🎃", "🔥", "💣", "💎", "👽"];
-    const numEmojis = 20; // Number of falling emojis
-    const links = [
+const links = [
         "https://www.nhathuocankhang.com/ban-tin-suc-khoe/15-thoi-quen-tot-cho-suc-khoe-moi-ngay-khong-the-bo-qua-1469128",
         "https://tuoitre.vn/co-gi-o-mang-den-thien-duong-hong-ma-ca-ngan-du-khach-ve-tham-20231231183607197.htm",
         "https://thegioilamvuon.com/chau-nhua-trong-cay/?srsltid=AfmBOopeDxgKPe1sqAvpPcJPGXg8hMlL_g9H8rOcFFul_AMRDFX7ykW9",
@@ -12,43 +9,51 @@ document.addEventListener("DOMContentLoaded", function () {
         "https://genius.com/Lola-young-messy-lyrics",
         "https://www.crescentmall.com.vn/tenants/ovs",
         "https://archive.org/details/the-pillow-book/page/n4/mode/1up",
-    ];
+];
 
-    // Function to create a random emoji
-    function createEmoji() {
-        const emoji = document.createElement("div");
-        emoji.classList.add("emoji");
-        emoji.textContent = emojiList[Math.floor(Math.random() * emojiList.length)];
-
-        // Random position and animation speed
-        emoji.style.left = Math.random() * 100 + "vw";
-        emoji.style.top = "-5vh"; // Start slightly above the screen
-        emoji.style.animationDuration = (Math.random() * 3 + 3) + "s"; // Fall duration: 3-6s
-
-        // Click event on emoji
-        emoji.addEventListener("click", function () {
-            if (Math.random() < 0.8) {
-                // 80% chance to open a random link
-                window.open(links[Math.floor(Math.random() * links.length)], "_blank");
-            } else {
-                // 20% chance to disappear
-                emoji.style.display = "none";
-            }
-        });
-
-        document.body.appendChild(emoji);
-
-        // Remove emoji from DOM after falling
-        setTimeout(() => {
-            emoji.remove();
-        }, 6000);
+function createX() {
+    const x = document.createElement("div");
+    x.textContent = "❌";
+    x.classList.add("x-symbol");
+    document.body.appendChild(x);
+    
+    let xPos = Math.random() * window.innerWidth;
+    let yPos = Math.random() * window.innerHeight;
+    let speedX = (Math.random() - 0.5) * 4;
+    let speedY = (Math.random() - 0.5) * 4;
+    
+    x.style.left = `${xPos}px`;
+    x.style.top = `${yPos}px`;
+    
+    function move() {
+        xPos += speedX;
+        yPos += speedY;
+        
+        if (xPos <= 0 || xPos >= window.innerWidth - 50) speedX *= -1;
+        if (yPos <= 0 || yPos >= window.innerHeight - 50) speedY *= -1;
+        
+        x.style.left = `${xPos}px`;
+        x.style.top = `${yPos}px`;
+        
+        requestAnimationFrame(move);
     }
+    move();
 
-    // Generate initial emojis
-    for (let i = 0; i < numEmojis; i++) {
-        createEmoji();
+    x.addEventListener("click", () => {
+        if (Math.random() < 0.5) {
+            openRandomLinks(3);
+        }
+        x.remove();
+    });
+}
+
+function openRandomLinks(count) {
+    const shuffledLinks = links.sort(() => 0.5 - Math.random());
+    for (let i = 0; i < count; i++) {
+        window.open(shuffledLinks[i], "_blank");
     }
+}
 
-    // Generate new emojis every second
-    setInterval(createEmoji, 1000);
-});
+for (let i = 0; i < 5; i++) {
+    createX();
+}
